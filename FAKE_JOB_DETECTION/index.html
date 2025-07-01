@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Authenticity Checker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .form-content {
+            padding: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .error {
+            color: #e74c3c;
+            background: #fdecea;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+        }
+        .hidden {
+            display: none;
+        }
+        .info-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Job Authenticity Checker</h1>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('link', event)">Check by URL</div>
+        <div class="tab" onclick="switchTab('manual', event)">Enter Details</div>
+    </div>
+
+    <form method="POST">
+        <input type="hidden" name="input_method" id="input_method" value="link">
+
+        <div id="link-form" class="form-content">
+            <div class="form-group">
+                <label for="job_link">Job Posting URL</label>
+                <input type="text" id="job_link" name="job_link" placeholder="https://example.com/job-posting" value="{{ job_link if job_link else '' }}">
+                <p class="info-text">Enter the full URL of the job posting you want to check</p>
+            </div>
+        </div>
+
+        <div id="manual-form" class="form-content hidden">
+            <div class="form-group">
+                <label for="company_name">Company Name</label>
+                <input type="text" id="company_name" name="company_name" placeholder="Enter company name">
+            </div>
+            <div class="form-group">
+                <label for="job_title">Job Title</label>
+                <input type="text" id="job_title" name="job_title" placeholder="Enter job title">
+            </div>
+            <div class="form-group">
+                <label for="job_description">Job Description</label>
+                <textarea id="job_description" name="job_description" placeholder="Paste the full job description here"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="salary">Salary/Compensation</label>
+                <input type="text" id="salary" name="salary" placeholder="Enter salary details if available">
+            </div>
+            <div class="form-group">
+                <label for="experience">Experience Required</label>
+                <input type="text" id="experience" name="experience" placeholder="Enter experience requirements">
+            </div>
+            <div class="form-group">
+                <label for="qualification">Qualifications</label>
+                <input type="text" id="qualification" name="qualification" placeholder="Enter required qualifications">
+            </div>
+            <div class="form-group">
+                <label for="skills">Skills Required</label>
+                <input type="text" id="skills" name="skills" placeholder="Enter required skills">
+            </div>
+        </div>
+
+        <button type="submit">Check Authenticity</button>
+    </form>
+</div>
+
+<script>
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+
+        document.getElementById('link-form').classList.toggle('hidden', tabName !== 'link');
+        document.getElementById('manual-form').classList.toggle('hidden', tabName !== 'manual');
+        document.getElementById('input_method').value = tabName;
+    }
+</script>
+</body>
+</html>
+                                               

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Check Result</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .result-box {
+      text-align: center;
+      border: 2px solid transparent;
+      padding: 25px;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .fake {
+      background-color: #ffebee;
+      border-color: #ef9a9a;
+    }
+
+    .real {
+      background-color: #e8f5e9;
+      border-color: #a5d6a7;
+    }
+
+    .result-text {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      overflow-wrap: break-word;
+    }
+
+    .fake .result-text {
+      color: #c62828;
+    }
+
+    .real .result-text {
+      color: #2e7d32;
+    }
+
+    .confidence {
+      font-size: 18px;
+      color: #7f8c8d;
+      word-wrap: break-word;
+    }
+
+    .job-details {
+      margin-top: 25px;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .detail-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .detail-label {
+      width: 150px;
+      font-weight: bold;
+      color: #2c3e50;
+      min-width: 150px;
+    }
+
+    .detail-value {
+      flex: 1;
+      min-width: 200px;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .description-preview {
+      max-height: 100px;
+      overflow: hidden;
+      position: relative;
+      word-break: break-word;
+    }
+
+    .description-preview::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(to bottom, rgba(248,249,250,0), rgba(248,249,250,1));
+    }
+
+    h3 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #2980b9;
+    }
+
+    /* Additional styles for fake job warnings */
+    .warning-signs {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fff3e0;
+      border-left: 4px solid #ffa000;
+      border-radius: 4px;
+      overflow-wrap: break-word;
+    }
+
+    .warning-title {
+      font-weight: bold;
+      color: #ff6f00;
+      margin-bottom: 8px;
+    }
+
+    .warning-list {
+      padding-left: 20px;
+    }
+
+    .warning-list li {
+      margin-bottom: 5px;
+    }
+
+    a {
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Job Authenticity Result</h1>
+
+    <div class="result-box {% if result == 'Fake Job' %}fake{% else %}real{% endif %}">
+      <div class="result-text">
+        {% if result == 'Fake Job' %}
+          ⚠️ Potential Fake Job Detected
+        {% else %}
+          ✓ Likely Genuine Job
+        {% endif %}
+      </div>
+      <div class="confidence">Confidence: {{ confidence }}</div>
+      <p>
+        {% if result == 'Fake Job' %}
+          This job posting shows several characteristics commonly associated with fraudulent listings.
+        {% else %}
+          This job posting appears to be legitimate based on our analysis.
+        {% endif %}
+      </p>
+    </div>
+
+    {% if result == 'Fake Job' %}
+    <div class="warning-signs">
+      <div class="warning-title">Warning Signs Detected:</div>
+      <ul class="warning-list">
+        <li>Unrealistically high salary for the position</li>
+        <li>Vague job description with few specific requirements</li>
+        <li>Requests for personal financial information</li>
+        <li>Poor grammar and spelling mistakes</li>
+        <li>No verifiable company information</li>
+      </ul>
+      <p style="margin-top: 10px; font-size: 14px;">
+        <strong>Recommendation:</strong> Proceed with extreme caution. Verify the company's legitimacy through independent sources before providing any personal information.
+      </p>
+    </div>
+    {% endif %}
+
+    <div class="job-details">
+      <h3>Job Details</h3>
+      <div class="detail-row">
+        <div class="detail-label">Company:</div>
+        <div class="detail-value">{{ job_details.company_name }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Position:</div>
+        <div class="detail-value">{{ job_details.job_title }}</div>
+      </div>
+      {% if job_details.job_link %}
+      <div class="detail-row">
+        <div class="detail-label">Job Link:</div>
+        <div class="detail-value">
+          <a href="{{ job_details.job_link }}" target="_blank" rel="noopener noreferrer">
+            {{ job_details.job_link|truncate(50, True) }}
+          </a>
+        </div>
+      </div>
+      {% endif %}
+      <div class="detail-row">
+        <div class="detail-label">Salary:</div>
+        <div class="detail-value">{{ job_details.salary }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Experience:</div>
+        <div class="detail-value">{{ job_details.experience }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Qualifications:</div>
+        <div class="detail-value">{{ job_details.qualification }}</div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-label">Skills:</div>
+        <div class="detail-value">{{ job_details.skills }}</div>
+      </div>
+      {% if job_details.job_description %}
+      <div class="detail-row">
+        <div class="detail-label">Description:</div>
+        <div class="detail-value">
+          <div class="description-preview">{{ job_details.job_description }}</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div style="text-align: center;">
+      <a href="/" class="back-btn">Check Another Job</a>
+    </div>
+  </div>
+</body>
+</html>
